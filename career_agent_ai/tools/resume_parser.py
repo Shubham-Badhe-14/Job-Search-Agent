@@ -1,7 +1,7 @@
 import os
 import PyPDF2
 import pdfplumber
-from crewai.tools import tool
+from langchain.tools import tool
 
 @tool("Resume Parser Tool")
 def parse_resume(file_path: str) -> str:
@@ -27,7 +27,7 @@ def parse_resume(file_path: str) -> str:
                     text += page_text + "\n"
             
             if text.strip():
-                return text.strip()
+                return f"✅ Resume parsed successfully!\n\nResume Content:\n{text}"
     except Exception as e:
         print(f"pdfplumber failed: {e}, trying PyPDF2...")
     
@@ -40,7 +40,7 @@ def parse_resume(file_path: str) -> str:
                 text += page.extract_text() + "\n"
             
             if text.strip():
-                return text.strip()
+                return f"✅ Resume parsed successfully!\n\nResume Content:\n{text}"
             else:
                 return "Error: Could not extract text from PDF. The file might be image-based or corrupted."
     

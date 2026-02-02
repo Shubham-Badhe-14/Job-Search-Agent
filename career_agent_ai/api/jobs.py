@@ -1,54 +1,48 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional, List
-from career_agent_ai.crews.job_search_crew import JobSearchCrew
-from career_agent_ai.utils.data_store import DataStore
+from career_agent_ai.orchestrator import JobSearchOrchestrator
+from career_agent_ai.data_manager import load_jobs, get_job_by_id
 
-router = APIRouter(prefix="/jobs", tags=["Jobs"])
+router = APIRouter(prefix="/jobs", tags=["jobs"])
+orchestrator = JobSearchOrchestrator()
 
-class JobSearchParams(BaseModel):
+class JobSearchRequest(BaseModel):
     role: str
     location: str
-    num_results: int = 5
+    num_results: Optional[int] = 5
 
-class JobSelection(BaseModel):
-    job_id: str  # Or index, or title if ID not available
-    job_data: dict # Full job data to be safe, or fetch from store
+class JobSelectRequest(BaseModel):
+    job_id: str
 
 @router.post("/search")
-async def search_jobs(params: JobSearchParams):
-    crew = JobSearchCrew()
+async def search_jobs_endpoint(request: JobSearchRequest):
+    """
+    Trigger a specialized job search agent workflow.
+    """
     try:
-        results = crew.run_search(params.role, params.location, params.num_results)
-        return {"status": "success", "data": results}
+        results = orchestrator.run_search(request.role, request.location, request.num_results)
+        return {"status": "success", "jobs": results}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/ranked")
-async def rank_jobs():
-    crew = JobSearchCrew()
-    try:
-        ranked_results = crew.run_ranking()
-        # ranked_results is likely a markdown string or stringified JSON from CrewAI
-        return {"status": "success", "data": ranked_results}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+async def get_ranked_jobs():
+    """
+    Get the list of currently stored (ranked) jobs.
+    """
+    jobs = load_jobs()
+    return {"jobs": jobs}
 
 @router.post("/select")
-async def select_job(selection: JobSelection):
+async def select_job(request: JobSelectRequest):
     """
-    Select a job to focus on for Phase 2.
-    Stores the selected job in a temporary 'selected_job.json'.
+    Select a job for further analysis (Phase 2).
     """
-    try:
-        import os
-        import json
-        DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
-        SELECTED_JOB_FILE = os.path.join(DATA_DIR, 'selected_job.json')
-        
-        with open(SELECTED_JOB_FILE, 'w') as f:
-            json.dump(selection.job_data, f, indent=2)
-            
-        return {"status": "success", "message": "Job selected", "job": selection.job_data.get('title')}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    job = get_job_by_id(request.job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+    
+    # Store selection? For now just return it to confirm.
+    # In Phase 2 we might store 'selected_job.json'
+    return {"status": "selected", "job": job}

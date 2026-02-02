@@ -10,6 +10,7 @@ __pycache__/
 venv/
 env/
 .venv/
+agent_env/
 
 # IDEs
 .vscode/
@@ -25,4 +26,5 @@ build/
 
 # Data (optional - if you don't want to push local data)
 career_agent_ai/data/*.json
+career_agent_ai/data/resumes/*.pdf
 !career_agent_ai/data/.gitkeep

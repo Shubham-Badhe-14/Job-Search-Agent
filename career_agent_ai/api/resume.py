@@ -1,48 +1,42 @@
-from fastapi import APIRouter, File, UploadFile, HTTPException
+from fastapi import APIRouter, UploadFile, File, HTTPException
 import shutil
 import os
-import pdfplumber
-import PyPDF2
-from career_agent_ai.utils.data_store import DataStore
+from career_agent_ai.tools.resume_parser import parse_resume
 
-router = APIRouter(prefix="/resume", tags=["Resume"])
+router = APIRouter(prefix="/resume", tags=["resume"])
 
-DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
-RESUME_PATH = os.path.join(DATA_DIR, 'current_resume.pdf')
+RESUME_DIR = "career_agent_ai/data/resumes"
+
+if not os.path.exists(RESUME_DIR):
+    os.makedirs(RESUME_DIR)
 
 @router.post("/upload")
 async def upload_resume(file: UploadFile = File(...)):
     """
-    Upload a resume PDF.
+    Upload a resume PDF and extract its text content.
     """
-    if not os.path.exists(DATA_DIR):
-        os.makedirs(DATA_DIR)
-        
+    file_location = f"{RESUME_DIR}/{file.filename}"
     try:
-        with open(RESUME_PATH, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
-            
-        # Optional: Parse immediately to verify
-        text = _parse_resume_text(RESUME_PATH)
-        if not text:
-             return {"status": "warning", "message": "Resume uploaded but text extraction failed/empty."}
-             
-        # Store text or structured data if we want. For now just file.
-        DataStore.save_resume({"path": RESUME_PATH, "extracted_preview": text[:200] + "..."})
-
-        return {"status": "success", "message": "Resume uploaded successfully", "path": RESUME_PATH}
+        with open(file_location, "wb+") as file_object:
+            shutil.copyfileobj(file.file, file_object)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Could not save file: {e}")
 
-def _parse_resume_text(file_path):
-    # Quick check helper reusing logic from tool
+    # Use the tool to parse it
+    # note: parse_resume is a langchain tool, we need to call its func or invoke it.
+    # checking tool definition: it has `parse_resume` function decorated with @tool.
+    # We can call it directly if logic is straightforward or use .run()
+    
+    # Since I defined `parse_resume` as a function decorated with @tool, I can call it.
+    # However, LangChain tools usually return string.
     try:
-        with pdfplumber.open(file_path) as pdf:
-            text = ""
-            for page in pdf.pages:
-                t = page.extract_text()
-                if t: text += t + "\n"
-            if text.strip(): return text.strip()
-    except:
-        pass
-    return None
+        # The tool expects a string file_path argument if invoked via agent, 
+        # but if called as function, we pass arguments.
+        # Let's check the tool definition again. It takes `file_path`.
+        result = parse_resume.invoke({"file_path": file_location})
+        
+        # Save parsed content for later use?
+        # Ideally we store it in session or return it to client.
+        return {"status": "success", "filename": file.filename, "parsed_content": result}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Parsing failed: {e}")

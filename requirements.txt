@@ -1,0 +1,11 @@
+crewai
+langchain_google_genai
+python-dotenv
+fastapi
+uvicorn
+pandas
+plotly
+reportlab
+streamlit
+tenacity
+google-generativeai

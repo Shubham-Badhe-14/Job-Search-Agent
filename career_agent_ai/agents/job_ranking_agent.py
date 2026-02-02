@@ -1,14 +1,18 @@
 from crewai import Agent
-from career_agent_ai.utils.llm_provider import get_llm
+from career_agent_ai.utils import get_llm
 
-def get_job_ranking_agent():
-    return Agent(
-        role='Job Ranking Specialist',
-        goal='Rank job opportunities based on skill density and relevance to the search criteria.',
-        backstory="""You are a rational and objective specialist who ranks options based on quantifiable data. 
-        You evaluate how well a job description matches the standard requirements for the role 
-        and identify the highest quality opportunities.""",
-        verbose=True,
-        llm=get_llm(),
-        allow_delegation=False
-    )
+class JobRankingAgent:
+    def __init__(self):
+        self.llm = get_llm()
+
+    def get_agent(self):
+        return Agent(
+            role='Job Evaluation & Ranking Specialist',
+            goal='Evaluate and rank job opportunities based on relevance and quality',
+            backstory="""You are a career strategist. Your job is to assess a list of 
+            job opportunities and rank them. You consider factors like role clarity, 
+            company reputation (inferred), and alignment with the search criteria.""",
+            verbose=True,
+            llm=self.llm,
+            allow_delegation=False
+        )

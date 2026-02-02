@@ -1,16 +1,20 @@
 from crewai import Agent
 from career_agent_ai.tools.job_search_tool import search_jobs
-from career_agent_ai.utils.llm_provider import get_llm
+from career_agent_ai.utils import get_llm
 
-def get_job_discovery_agent():
-    return Agent(
-        role='Senior Job Discovery Specialist',
-        goal='Find the most relevant job opportunities based on the user\'s criteria.',
-        backstory="""You are an expert job search specialist with extensive experience in 
-        identifying high-quality job opportunities from various sources. 
-        You are precise and focused on finding the latest and most relevant openings.""",
-        verbose=True,
-        llm=get_llm(),
-        allow_delegation=False,
-        tools=[search_jobs]
-    )
+class JobDiscoveryAgent:
+    def __init__(self):
+        self.llm = get_llm()
+
+    def get_agent(self):
+        return Agent(
+            role='Senior Job Search Specialist',
+            goal='Find the most relevant job opportunities that match the specified criteria',
+            backstory="""You are an expert job search specialist with extensive experience in 
+            identifying high-quality job opportunities. You excel at understanding job 
+            market trends and finding the perfect matches.""",
+            verbose=True,
+            llm=self.llm,
+            tools=[search_jobs],
+            allow_delegation=False
+        )
