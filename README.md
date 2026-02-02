@@ -1,18 +1,28 @@
-# CareerAgent AI (Local MVP)
+# 🚀 CareerAgent AI
 
-A modular, API-driven multi-agent system for personalized job search and career development.
+A robust, multi-agent AI system designed to automate job searching, skill gap analysis, and personalized career development planning. Powered by **Google Gemini 2.0 Flash Lite** and **CrewAI**.
 
-## 🚀 Features
+![Status: Stable](https://img.shields.io/badge/Status-Stable-green)
+![Python: 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue)
+![AI: Gemini](https://img.shields.io/badge/AI-Google%20Gemini-orange)
 
-### Phase 1: AI-Powered Job Search
-- **Job Discovery**: Fetches jobs via Adzuna API.
-- **Job Analysis**: Extracts required skills from descriptions.
-- **Job Ranking**: Ranks jobs by relevance and quality.
+## ✨ Key Features
 
-### Phase 2: Resume & Skills Engine
-- **Resume Parsing**: Extracts structured data from PDF resumes using `pdfplumber`.
-- **Skill Gap Analysis**: Compares candidate skills vs. job requirements.
-- **Learning Path Generation**: personalized roadmap to bridge skill gaps.
+### 🤖 Intelligent Agents (Phase 2)
+*   **Job Discovery Agent**: Intelligently queries the Adzuna API to find relevant roles.
+*   **Job Ranking Specialist**: Evaluates and ranks jobs based on description quality and relevance.
+*   **Skills Gap Analyst**: Extracts skills from your uploaded PDF resume and compares them against target job requirements.
+*   **Learning Path Curator**: Generates personalized study plans (courses, docs, projects) to bridge identified gaps.
+
+### 🛡️ "Antigravity" Resilience
+*   **Smart Rate Limiting**: Features a custom exponential backoff system to gracefully handle API rate limits (429 errors).
+*   **Gemini Lite Optimization**: Tuned to use the efficient `gemini-flash-lite-latest` model for high availability.
+
+### 💻 Interfaces
+*   **Backend**: High-performance **FastAPI** server with documented endpoints.
+*   **Frontend**: Interactive **Streamlit** dashboard for easy testing and visualization.
+
+---
 
 ## 🛠️ Installation
 
@@ -22,60 +32,73 @@ A modular, API-driven multi-agent system for personalized job search and career 
     cd Job-Search-Agent
     ```
 
-2.  **Set up Virtual Environment**:
+2.  **Setup Environment**:
+    We provided helper scripts to make this easy.
+    ```bash
+    # This will create the 'agent_env' virtual environment and install dependencies
+    ./run_backend.sh
+    # (Press Ctrl+C after it starts to exit)
+    ```
+    *Alternatively, manually:*
     ```bash
     python3 -m venv agent_env
     source agent_env/bin/activate
     pip install -r requirements.txt
-    pip install pytest httpx  # For testing
     ```
 
-3.  **Configure Environment**:
-    Create a `.env` file with your API keys:
+3.  **Configure Keys**:
+    Create a `.env` file in the root directory:
     ```ini
-    GOOGLE_API_KEY=AIz...
-    ADZUNA_APP_ID=...
-    ADZUNA_API_KEY=...
+    GOOGLE_API_KEY=your_gemini_key_here
+    ADZUNA_APP_ID=your_adzuna_app_id
+    ADZUNA_API_KEY=your_adzuna_api_key
     ```
 
-## 🏃 Usage
+---
 
-### Start the API
+## 🚀 Usage
+
+We call it the **"Two-Terminal"** setup.
+
+### 1. Start the Brain (Backend) 🧠
+Open your first terminal and run:
 ```bash
-uvicorn career_agent_ai.app:app --reload
+./run_backend.sh
 ```
-The API will be available at `http://127.0.0.1:8000`.
-Check the interactive docs at `http://127.0.0.1:8000/docs`.
+*   API Docs will be at: `http://localhost:8000/docs`
 
-### API Endpoints
-
-- **Job Search**:
-    - `POST /jobs/search`: Trigger agentic search.
-    - `GET /jobs/ranked`: Retrieve ranked jobs.
-    - `POST /jobs/select`: Select a job for skill analysis.
-
-- **Career Development**:
-    - `POST /resume/upload`: Upload PDF resume.
-    - `POST /skills/gap`: Analyze skill gap for selected job.
-    - `POST /skills/learning-path`: Generate learning path.
-
-## 🧪 Testing
-
-Run unit tests:
+### 2. Start the Interface (Frontend) 💻
+Open a **second terminal** and run:
 ```bash
-python -m pytest career_agent_ai/tests/
+./run_frontend.sh
 ```
+*   This will automatically open the UI in your browser at `http://localhost:8501`.
+
+---
+
+## 🧪 Workflow Validation
+
+1.  **Upload Resume**: Drag & Drop your PDF resume in the sidebar.
+2.  **Search Jobs**: Enter a query (e.g., "Data Scientist" in "New York").
+3.  **Select Job**: Choose a promising result from the list.
+4.  **Gap Analysis**: Click "Analyze Skill Gaps" to see what you're missing.
+5.  **Learning Plan**: Generate a roadmap to get hired!
+
+---
 
 ## 📂 Project Structure
 
 ```
 career_agent_ai/
-├── agents/             # CrewAI Agents (Discovery, Analysis, Ranking, Skills, Learning)
-├── tools/              # Tools (Adzuna Search, Resume Parser)
-├── api/                # FastAPI Routers
-├── data/               # Local JSON storage
-├── tests/              # Unit and integration tests
-├── app.py              # Application entry point
-├── orchestrator.py     # Agent workflow orchestration
-└── utils.py            # Shared utilities
+├── agents/             # CrewAI Agent Definitions
+├── tools/              # Custom Tools (Adzuna, PDF Parser)
+├── api/                # FastAPI Route Handlers
+├── data/               # Local JSON Data Store
+│   └── resumes/        # (Ignored by Git for privacy)
+├── app.py              # Backend Entry Point
+├── orchestrator.py     # Agent Workflow Logic
+└── utils.py            # LLM Configuration & Retry Logic
 ```
+
+## 🔐 Privacy Note
+This repository is configured to **ignore** all PDF files in the `data/resumes/` directory. Your personal data stays on your local machine.
