@@ -14,9 +14,6 @@ A robust, multi-agent AI system designed to automate job searching, skill gap an
 *   **Skills Gap Analyst**: Extracts skills from your uploaded PDF resume and compares them against target job requirements.
 *   **Learning Path Curator**: Generates personalized study plans (courses, docs, projects) to bridge identified gaps.
 
-### 🛡️ "Antigravity" Resilience
-*   **Smart Rate Limiting**: Features a custom exponential backoff system to gracefully handle API rate limits (429 errors).
-*   **Gemini Lite Optimization**: Tuned to use the efficient `gemini-flash-lite-latest` model for high availability.
 
 ### 💻 Interfaces
 *   **Backend**: High-performance **FastAPI** server with documented endpoints.
