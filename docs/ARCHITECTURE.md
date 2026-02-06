@@ -27,7 +27,7 @@ CareerAgent AI is a multi-agent system designed to automate job searching and ca
 *   **Data (`backend/data/`)**:
     *   JSON-based local storage for jobs and temporary resume data.
 
-## tech Stack
+## Tech Stack
 *   **Language**: Python 3.10+
 *   **Orchestration**: CrewAI, LangChain
 *   **LLM**: Google Gemini 2.0 Flash Lite (via `langchain-google-genai`)
