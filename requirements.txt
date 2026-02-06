@@ -1,4 +1,6 @@
 crewai
+crewai-tools
+langchain
 langchain_google_genai
 python-dotenv
 fastapi
@@ -9,3 +11,5 @@ reportlab
 streamlit
 tenacity
 google-generativeai
+PyPDF2
+pdfplumber

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "error_parsing",
+    "title": "Search Result (Parse Error)",
+    "description": "Agent stopped due to iteration limit or time limit.",
+    "company": "N/A",
+    "location": "India",
+    "salary": "N/A",
+    "skills": [],
+    "rank_reason": "Output was not valid JSON"
+  }
+]

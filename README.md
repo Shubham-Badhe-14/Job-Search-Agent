@@ -33,8 +33,7 @@ A robust, multi-agent AI system designed to automate job searching, skill gap an
     We provided helper scripts to make this easy.
     ```bash
     # This will create the 'agent_env' virtual environment and install dependencies
-    ./run_backend.sh
-    # (Press Ctrl+C after it starts to exit)
+    ./scripts/setup_env.sh
     ```
     *Alternatively, manually:*
     ```bash
@@ -60,14 +59,14 @@ We call it the **"Two-Terminal"** setup.
 ### 1. Start the Brain (Backend) 🧠
 Open your first terminal and run:
 ```bash
-./run_backend.sh
+./scripts/run_backend.sh
 ```
 *   API Docs will be at: `http://localhost:8000/docs`
 
 ### 2. Start the Interface (Frontend) 💻
 Open a **second terminal** and run:
 ```bash
-./run_frontend.sh
+./scripts/run_frontend.sh
 ```
 *   This will automatically open the UI in your browser at `http://localhost:8501`.
 
@@ -83,19 +82,17 @@ Open a **second terminal** and run:
 
 ---
 
-## 📂 Project Structure
+Job-Search-Agent/
+├── backend/            # FastAPI Backend & Agents
+├── frontend/           # Streamlit Frontend
+├── scripts/            # Helper Shell Scripts
+├── configs/            # Configuration Files
+├── docs/               # Detailed Documentation
+└── README.md           # This file
 
-```
-career_agent_ai/
-├── agents/             # CrewAI Agent Definitions
-├── tools/              # Custom Tools (Adzuna, PDF Parser)
-├── api/                # FastAPI Route Handlers
-├── data/               # Local JSON Data Store
-│   └── resumes/        # (Ignored by Git for privacy)
-├── app.py              # Backend Entry Point
-├── orchestrator.py     # Agent Workflow Logic
-└── utils.py            # LLM Configuration & Retry Logic
-```
+## 📚 Documentation
+- [Architecture Overview](docs/ARCHITECTURE.md)
+- [Usage Guide](docs/USAGE.md)
 
 ## 🔐 Privacy Note
 This repository is configured to **ignore** all PDF files in the `data/resumes/` directory. Your personal data stays on your local machine.

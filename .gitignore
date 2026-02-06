@@ -2,6 +2,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.pytest_cache/
+.DS_Store
 
 # Environment variables
 .env
@@ -25,6 +27,6 @@ build/
 *.log
 
 # Data (optional - if you don't want to push local data)
-career_agent_ai/data/*.json
-career_agent_ai/data/resumes/*.pdf
-!career_agent_ai/data/.gitkeep
+backend/data/*.json
+backend/data/resumes/*.pdf
+!backend/data/.gitkeep
