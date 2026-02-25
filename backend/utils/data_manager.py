@@ -11,6 +11,7 @@ def ensure_data_dir():
 
 def save_jobs(jobs: List[Dict[str, Any]]):
     ensure_data_dir()
+    print(f"DEBUG: Saving {len(jobs)} jobs to {JOBS_FILE}")
     with open(JOBS_FILE, 'w') as f:
         json.dump(jobs, f, indent=2)
 
@@ -26,7 +27,9 @@ def load_jobs() -> List[Dict[str, Any]]:
 
 def get_job_by_id(job_id: str) -> Dict[str, Any]:
     jobs = load_jobs()
+    print(f"DEBUG: Looking for job_id '{job_id}' in {len(jobs)} jobs")
     for job in jobs:
         if str(job.get('id')) == str(job_id):
             return job
+    print(f"DEBUG: Job ID '{job_id}' NOT FOUND")
     return None

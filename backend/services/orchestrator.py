@@ -50,12 +50,13 @@ class JobSearchOrchestrator:
             description=f"""Rank the analyzed jobs based on relevance to the role '{role}'.
             Provide a justification for the ranking.
             IMPORTANT: Your final output MUST be valid JSON list of objects, where each object has:
-            - id (can be generated if missing, or use URL as unique key)
+            - id (CRITICAL: reuse the ID from the input if available, or generate a unique one)
             - title
             - company
             - location
             - salary
             - description
+            - url (CRITICAL: reuse the URL from the input)
             - skills (list of strings)
             - rank_reason
             Do not include markdown formatting like ```json ... ``` in the final output, just the raw JSON string if possible, 
@@ -100,8 +101,11 @@ class JobSearchOrchestrator:
                         job['id'] = f"job_{i}"
                 save_jobs(jobs_data)
                 return jobs_data
-        except json.JSONDecodeError:
-            print("Failed to parse CrewAI output as JSON. Saving raw text as description for one entry.")
+                save_jobs(jobs_data)
+                return jobs_data
+        except json.JSONDecodeError as e:
+            print(f"ERROR: Failed to parse CrewAI output: {e}")
+            print(f"Raw output: {cleaned_result}")
             # Fallback: save one dummy job with the text
             fallback_jobs = [{
                 'id': 'error_parsing',
@@ -118,7 +122,7 @@ class JobSearchOrchestrator:
 
         return result
 
-    def analyze_skill_gap(self, resume_content: str, job_details: dict):
+    def analyze_skill_gap(self, resume_content: str, job_details: dict) -> str:
         gap_task = Task(
             description=f"""Compare the candidate's resume skills against the target job requirements.
             
@@ -140,9 +144,11 @@ class JobSearchOrchestrator:
             process=Process.sequential,
             verbose=True
         )
-        return crew.kickoff()
+        result = crew.kickoff()
+        # Return raw string content
+        return result.raw if hasattr(result, 'raw') else str(result)
 
-    def generate_learning_path(self, gap_analysis: str):
+    def generate_learning_path(self, gap_analysis: str) -> str:
         path_task = Task(
             description=f"""Based on the following skill gap analysis, create a learning path.
             
@@ -150,8 +156,9 @@ class JobSearchOrchestrator:
             {gap_analysis}
             
             Suggest specific courses, documentation, or projects to bridge these gaps.
-            Prioritize the most critical missing skills.""",
-            expected_output="A personalized learning path with resources.",
+            Prioritize the most critical missing skills.
+            IMPORTANT: Output the plan as a clear list of steps using simple bullet points (-). Do not number them.""",
+            expected_output="A list of actionable learning steps, formatted as a markdown bulleted list.",
             agent=self.learning_path_agent
         )
         
@@ -161,4 +168,6 @@ class JobSearchOrchestrator:
             process=Process.sequential,
             verbose=True
         )
-        return crew.kickoff()
+        result = crew.kickoff()
+        # Return raw string content
+        return result.raw if hasattr(result, 'raw') else str(result)

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Job Hunter & Career Architect</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Background Mouse Glow -->
+    <div class="cursor-glow"></div>
+
+    <!-- Navbar -->
+    <nav data-aos="fade-down">
+        <div class="logo"><i class="fa-solid fa-atom"></i> JobAI</div>
+        <div class="nav-links">
+            <a href="#upload">Search</a>
+            <a href="#results">Jobs</a>
+            <a href="#roadmap">Plan</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content" data-aos="zoom-in">
+            <h1>Unlock Your <span class="gradient-text">Dream Career</span></h1>
+            <p>Upload your resume. Let our AI match you with jobs and build your personalized upskilling roadmap.</p>
+            <a href="#upload" class="btn-primary">Start Analysis <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </header>
+
+    <!-- Step 1: Upload & Preferences -->
+    <section id="upload" class="container">
+        <div class="section-header" data-aos="fade-up">
+            <h2>Data Input</h2>
+            <p>Tell us about yourself</p>
+        </div>
+
+        <div class="glass-panel" data-aos="fade-up" data-aos-delay="100">
+            <form id="searchForm">
+                <div class="upload-zone" id="dropZone">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <h3>Upload Resume (PDF/DOCX)</h3>
+                    <p>Drag & drop or click to browse</p>
+                    <input type="file" id="resumeInput" hidden>
+                    <div id="fileName" class="file-name"></div>
+                </div>
+
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Target Role</label>
+                        <input type="text" placeholder="e.g. Frontend Developer" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Location</label>
+                        <input type="text" placeholder="e.g. Remote, New York" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Experience Level</label>
+                        <select>
+                            <option>Junior (0-2 yrs)</option>
+                            <option>Mid-Level (3-5 yrs)</option>
+                            <option>Senior (5+ yrs)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <i class="fa-solid fa-magnifying-glass"></i> Analyze & Find Jobs
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Loading Simulation (Hidden by default) -->
+    <div id="loader" class="loader-container hidden">
+        <div class="spinner"></div>
+        <p>AI is analyzing your profile...</p>
+    </div>
+
+    <!-- Step 2: Job Results -->
+    <section id="results" class="container hidden">
+        <div class="section-header" data-aos="fade-up">
+            <h2>AI Matched Jobs</h2>
+            <p>Based on your skills and resume</p>
+        </div>
+
+        <div class="jobs-grid">
+            <!-- Job Card 1 -->
+            <div class="job-card glass-card" data-aos="fade-up">
+                <div class="match-badge">98% Match</div>
+                <div class="job-icon" style="background: #6c5ce7;"><i class="fa-brands fa-google"></i></div>
+                <h3>Frontend Engineer</h3>
+                <p class="company">TechCorp Inc. • Remote</p>
+                <div class="tags">
+                    <span>React</span><span>TypeScript</span><span>Three.js</span>
+                </div>
+                <div class="card-actions">
+                    <button class="btn-apply">Apply Now</button>
+                    <button class="btn-details">View Details</button>
+                </div>
+            </div>
+
+            <!-- Job Card 2 -->
+            <div class="job-card glass-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="match-badge">85% Match</div>
+                <div class="job-icon" style="background: #00cec9;"><i class="fa-brands fa-amazon"></i></div>
+                <h3>UI/UX Developer</h3>
+                <p class="company">Creative Studio • New York</p>
+                <div class="tags">
+                    <span>Figma</span><span>CSS</span><span>Vue.js</span>
+                </div>
+                <div class="card-actions">
+                    <button class="btn-apply">Apply Now</button>
+                    <button class="btn-details">View Details</button>
+                </div>
+            </div>
+
+            <!-- Job Card 3 -->
+            <div class="job-card glass-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="match-badge">78% Match</div>
+                <div class="job-icon" style="background: #fd79a8;"><i class="fa-solid fa-rocket"></i></div>
+                <h3>Web Developer</h3>
+                <p class="company">StartupFlow • Austin</p>
+                <div class="tags">
+                    <span>HTML</span><span>JS</span><span>Tailwind</span>
+                </div>
+                <div class="card-actions">
+                    <button class="btn-apply">Apply Now</button>
+                    <button class="btn-details">View Details</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="center-btn">
+            <button id="generatePlanBtn" class="btn-primary glow-btn">Generate Learning Roadmap <i
+                    class="fa-solid fa-wand-magic-sparkles"></i></button>
+        </div>
+    </section>
+
+    <!-- Step 3: Learning Roadmap -->
+    <section id="roadmap" class="container hidden">
+        <div class="section-header" data-aos="fade-up">
+            <h2>Your Growth Plan</h2>
+            <p>Bridge the gap to your dream role</p>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item left" data-aos="fade-right">
+                <div class="content glass-card">
+                    <h3>Week 1-2: Advanced React</h3>
+                    <p>Focus on Hooks, Context API, and Performance Optimization.</p>
+                    <span class="status">Pending</span>
+                </div>
+            </div>
+            <div class="timeline-item right" data-aos="fade-left">
+                <div class="content glass-card">
+                    <h3>Week 3: Backend Basics</h3>
+                    <p>Learn Node.js basics to understand API integration better.</p>
+                    <span class="status">Locked</span>
+                </div>
+            </div>
+            <div class="timeline-item left" data-aos="fade-right">
+                <div class="content glass-card">
+                    <h3>Week 4: System Design</h3>
+                    <p>Understanding scalable architecture for frontend apps.</p>
+                    <span class="status">Locked</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 JobAI Project. Crafted with <i class="fa-solid fa-heart"></i></p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,12 +1,48 @@
 [
   {
-    "id": "error_parsing",
-    "title": "Search Result (Parse Error)",
-    "description": "Agent stopped due to iteration limit or time limit.",
-    "company": "N/A",
+    "id": "5603181250",
+    "title": "Data Engineer",
+    "company": "EXL",
     "location": "India",
-    "salary": "N/A",
-    "skills": [],
-    "rank_reason": "Output was not valid JSON"
+    "salary": "Not explicitly stated",
+    "description": "Minimum 5 years of experience in data engineering. Must have hands-on expertise or certification in Palantir Foundry. Skills include Data Engineering, AWS, Microservices Architecture, and AI/ML Frameworks.",
+    "url": "https://www.adzuna.in/land/ad/5603181250?se=FLNcRZYI8RGHnNYaybMGAw&utm_medium=api&utm_source=ea06fb05&v=C54BF0AF298C98DACF09AE06D1EA30382506EF33",
+    "skills": [
+      "Data Engineering",
+      "AWS",
+      "Microservices Architecture",
+      "AI/ML Frameworks",
+      "Palantir Foundry"
+    ],
+    "rank_reason": "Highest Relevance (Rank 1). This role explicitly requires 5+ years of experience and lists highly specific, modern Data Engineering technologies (AWS, AI/ML Frameworks, Palantir Foundry). It represents a strong, senior-level Data Engineering opportunity."
+  },
+  {
+    "id": "5619613409",
+    "title": "Data Engineer",
+    "company": "ThoughtFocus",
+    "location": "Bangalore, Karnataka",
+    "salary": "Not explicitly stated",
+    "description": "Focus on driving innovation and modernization. Experience working with clients in financial services, manufacturing, and higher education/public services sectors is beneficial.",
+    "url": "https://www.adzuna.in/land/ad/5619613409?se=FLNcRZYI8RGHnNYaybMGAw&utm_medium=api&utm_source=ea06fb05&v=E125F2EFEAA6390E1C320857F8D5614E63A44145",
+    "skills": [
+      "Domain Expertise (Financial Services, Manufacturing, Higher Education/Public Services)",
+      "Innovation",
+      "Modernization"
+    ],
+    "rank_reason": "Medium Relevance (Rank 2). While the title is 'Data Engineer,' the listed skills focus heavily on domain expertise and modernization strategy rather than core technical data engineering tools (like specific cloud platforms or ETL tools). It suggests a strategic or consulting-oriented DE role."
+  },
+  {
+    "id": "5616719089",
+    "title": "Data Engineer",
+    "company": "Inspire Brands Hyderabad Support Center",
+    "location": "Hyderabad, Telangana",
+    "salary": "Not explicitly stated",
+    "description": "Role is focused on Data Engineering Support Analyst duties, ensuring smooth operation and support of data engineering infrastructure. Requires skills in Data Engineering Support and Monitoring.",
+    "url": "https://www.adzuna.in/land/ad/5616719089?se=FLNcRZYI8RGHnNYaybMGAw&utm_medium=api&utm_source=ea06fb05&v=4D185EBC95221F2B0ACB8C166C90D4C7A4E01723",
+    "skills": [
+      "Data Engineering Support",
+      "Monitoring"
+    ],
+    "rank_reason": "Lowest Relevance (Rank 3). This role is explicitly titled as a 'Support Analyst' function within Data Engineering, focusing on monitoring and maintenance rather than core development, pipeline building, or advanced engineering tasks typically sought by a Data Engineer."
   }
 ]

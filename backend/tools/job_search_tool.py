@@ -40,7 +40,19 @@ class JobSearchTool(BaseTool):
         api_key = os.getenv('ADZUNA_API_KEY')
         
         base_url = "http://api.adzuna.com/v1/api/jobs"
-        country = 'us' 
+        
+        # Simple country detection based on location string
+        country = 'us' # Default
+        loc_lower = location.lower()
+        if any(x in loc_lower for x in ['india', 'bangalore', 'mumbai', 'delhi', 'hyderabad', 'chennai', 'pune', 'kolkata']):
+            country = 'in'
+        elif any(x in loc_lower for x in ['uk', 'london', 'manchester', 'birmingham', 'leeds']):
+            country = 'gb'
+        elif any(x in loc_lower for x in ['canada', 'toronto', 'vancouver', 'montreal']):
+            country = 'ca'
+        elif any(x in loc_lower for x in ['australia', 'sydney', 'melbourne', 'brisbane']):
+            country = 'au'
+            
         url = f"{base_url}/{country}/search/1"
         
         params = {

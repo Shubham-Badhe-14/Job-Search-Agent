@@ -15,6 +15,6 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 cd "$PROJECT_ROOT"
 
 ./scripts/run_backend.sh &
-./scripts/run_frontend.sh &
+./scripts/run_vanilla_ui.sh &
 
 wait
