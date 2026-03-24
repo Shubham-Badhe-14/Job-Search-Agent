@@ -1,11 +1,11 @@
 from fastapi import APIRouter, HTTPException
+import asyncio
 from pydantic import BaseModel
 from typing import Optional, List
-from backend.services.orchestrator import JobSearchOrchestrator
+from backend.services.orchestrator import get_orchestrator
 from backend.utils.data_manager import load_jobs, get_job_by_id
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
-orchestrator = JobSearchOrchestrator()
 
 class JobSearchRequest(BaseModel):
     role: str
@@ -21,7 +21,8 @@ async def search_jobs_endpoint(request: JobSearchRequest):
     Trigger a specialized job search agent workflow.
     """
     try:
-        results = orchestrator.run_search(request.role, request.location, request.num_results)
+        orchestrator = get_orchestrator()
+        results = await asyncio.to_thread(orchestrator.run_search, request.role, request.location, request.num_results)
         return {"status": "success", "jobs": results}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

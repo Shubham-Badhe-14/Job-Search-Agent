@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Job Hunter & Career Architect</title>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <!-- AOS Animation Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <!-- Icons -->
@@ -16,18 +16,30 @@
 
 <body>
 
+    <!-- Ambient Mesh Background -->
+    <div class="ambient-mesh">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
     <!-- Background Mouse Glow -->
     <div class="cursor-glow"></div>
-
     <!-- Navbar -->
     <nav data-aos="fade-down">
-        <div class="logo"><i class="fa-solid fa-atom"></i> JobAI</div>
+        <div class="logo"><i class="fa-solid fa-atom"></i> CareerAlign</div>
         <div class="nav-links">
             <a href="#upload">Search</a>
-            <a href="#results">Jobs</a>
-            <a href="#roadmap">Plan</a>
+            <a href="#ats-insights" data-guard="resume">ATS</a>
+            <a href="#results" data-guard="resume">Jobs</a>
+            <a href="#optimization-insights" data-guard="optimize">Optimize</a>
+            <a href="#roadmap" data-guard="optimize">Plan</a>
         </div>
     </nav>
+
+    <!-- Toast Notification -->
+    <div id="navToast" class="nav-toast"></div>
+
 
     <!-- Hero Section -->
     <header class="hero">
@@ -81,11 +93,112 @@
         </div>
     </section>
 
-    <!-- Loading Simulation (Hidden by default) -->
-    <div id="loader" class="loader-container hidden">
-        <div class="spinner"></div>
-        <p>AI is analyzing your profile...</p>
+    <!-- AI Processing Overlay -->
+    <div id="processingOverlay" class="processing-overlay">
+        <div class="processing-card">
+            <div class="processing-header">
+                <div class="orbital-spinner">
+                    <div class="orbit"></div>
+                    <div class="orbit"></div>
+                    <div class="orbit"></div>
+                </div>
+                <h3>Analyzing Your Profile</h3>
+                <p>AI agents are processing your resume</p>
+            </div>
+            <ul class="processing-steps" id="processingSteps">
+                <li class="processing-step" data-step="0">
+                    <div class="step-icon">
+                        <span class="step-dot"></span>
+                        <svg viewBox="0 0 24 24">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <span class="step-text">Parsing Resume Structure</span>
+                </li>
+                <li class="processing-step" data-step="1">
+                    <div class="step-icon">
+                        <span class="step-dot"></span>
+                        <svg viewBox="0 0 24 24">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <span class="step-text">Extracting Core Competencies</span>
+                </li>
+                <li class="processing-step" data-step="2">
+                    <div class="step-icon">
+                        <span class="step-dot"></span>
+                        <svg viewBox="0 0 24 24">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <span class="step-text">Matching Against Target Role</span>
+                </li>
+                <li class="processing-step" data-step="3">
+                    <div class="step-icon">
+                        <span class="step-dot"></span>
+                        <svg viewBox="0 0 24 24">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <span class="step-text">Computing Alignment Score</span>
+                </li>
+                <li class="processing-step" data-step="4">
+                    <div class="step-icon">
+                        <span class="step-dot"></span>
+                        <svg viewBox="0 0 24 24">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <span class="step-text">Identifying Skill Gaps</span>
+                </li>
+                <li class="processing-step" data-step="5">
+                    <div class="step-icon">
+                        <span class="step-dot"></span>
+                        <svg viewBox="0 0 24 24">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <span class="step-text">Generating Optimization Strategy</span>
+                </li>
+            </ul>
+        </div>
     </div>
+
+    <!-- NEW: ATS Insights Section -->
+    <section id="ats-insights" class="container hidden">
+        <div class="section-header" data-aos="fade-up">
+            <h2>ATS <span class="gradient-text">Intelligence</span></h2>
+            <p>Your resume's compatibility score</p>
+        </div>
+
+        <div class="glass-panel" data-aos="fade-up" data-aos-delay="100">
+            <!-- Score Ring -->
+            <div class="ats-score-wrapper">
+                <div class="score-ring-container">
+                    <svg viewBox="0 0 180 180">
+                        <defs>
+                            <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#6c5ce7" />
+                                <stop offset="100%" stop-color="#00cec9" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="score-ring-bg" cx="90" cy="90" r="80" />
+                        <circle class="score-ring-fill" id="scoreRingFill" cx="90" cy="90" r="80" />
+                    </svg>
+                    <div class="score-ring-text">
+                        <div class="score-value" id="atsScoreValue">0</div>
+                        <div class="score-label">ATS Compatibility Score</div>
+                    </div>
+                </div>
+                <div class="score-confidence" id="atsConfidence">Confidence Level: —</div>
+            </div>
+
+            <!-- Category Breakdown Grid -->
+            <div class="category-grid" id="categoryGrid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </section>
 
     <!-- Step 2: Job Results -->
     <section id="results" class="container hidden">
@@ -141,10 +254,83 @@
             </div>
         </div>
 
-        <div class="center-btn">
-            <button id="generatePlanBtn" class="btn-primary glow-btn">Generate Learning Roadmap <i
-                    class="fa-solid fa-wand-magic-sparkles"></i></button>
+
+    </section>
+
+    <!-- Locked Alignment Placeholder (shown when no job is selected) -->
+    <section id="locked-alignment" class="container hidden">
+        <div class="glass-panel" data-aos="fade-up" style="text-align: center; padding: 3rem 2rem;">
+            <h2 style="margin-bottom: 0.75rem;">🔒 Select a Job to Generate Alignment Insights</h2>
+            <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto 1.5rem;">Choose a target role to unlock
+                personalized resume optimization, skill gap analysis, and projected score improvements.</p>
+            <a href="#results" class="btn-primary" id="browseJobsBtn">Browse Jobs <i
+                    class="fa-solid fa-briefcase"></i></a>
         </div>
+    </section>
+
+    <!-- NEW: Optimization Insights Section -->
+    <section id="optimization-insights" class="container hidden">
+        <div class="section-header" data-aos="fade-up">
+            <h2>Optimization <span class="gradient-text">Insights</span></h2>
+            <p>AI-powered suggestions to strengthen your resume</p>
+        </div>
+
+        <div class="optimization-grid">
+            <!-- Left: Suggestions -->
+            <div class="glass-panel" data-aos="fade-right">
+                <div class="panel-title"><i class="fa-solid fa-lightbulb"></i> Improvement Suggestions</div>
+                <div id="suggestionsList">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Right: Skill Gap -->
+            <div class="glass-panel" data-aos="fade-left">
+                <div class="panel-title"><i class="fa-solid fa-chart-bar"></i> Skill Gap Analysis</div>
+                <div id="skillGapList">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Alignment Delta -->
+        <div class="glass-panel" style="margin-top: 2rem;" data-aos="fade-up">
+            <div class="panel-title"><i class="fa-solid fa-arrow-trend-up"></i> Alignment Delta</div>
+            <div class="delta-grid">
+                <div class="delta-card" data-aos="fade-right">
+                    <div class="delta-score" id="deltaCurrentScore">—</div>
+                    <div class="delta-label">Current Score</div>
+                </div>
+                <div class="delta-arrow">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
+                <div class="delta-card" data-aos="fade-left">
+                    <div class="delta-score gradient-text" id="deltaOptimizedScore">—</div>
+                    <div class="delta-label">Optimized Projection</div>
+                </div>
+            </div>
+            <div class="delta-improvement" id="deltaImprovement"></div>
+        </div>
+
+
+
+        <!-- NEW: Resume Studio -->
+        <div class="glass-panel" style="margin-top: 2rem;" data-aos="fade-up">
+            <div class="panel-title"><i class="fa-solid fa-pen-to-square"></i> Resume Studio</div>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Apply AI suggestions or manually edit your parsed resume before downloading the final tailored version.</p>
+            <textarea id="resumeEditor" class="resume-editor-area" placeholder="Your resume content will appear here..."></textarea>
+            
+            <div class="studio-actions" style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: flex-end;">
+                <button id="btnAutoImprove" class="btn-primary" style="background: linear-gradient(135deg, var(--secondary), var(--primary)); padding: 0.8rem 1.5rem;"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Improve with AI</button>
+                <button id="btnDownloadResume" class="btn-details" style="padding: 0.8rem 1.5rem;"><i class="fa-solid fa-download"></i> Download Local Copy</button>
+            </div>
+        </div>
+
+        <div class="center-btn" id="generatePlanBtnWrap" style="display: none; margin-top: 3rem;">
+            <button id="generatePlanBtn" class="btn-primary glow-btn">Generate Learning Roadmap <i
+                    class="fa-solid fa-graduation-cap"></i></button>
+        </div>
+
     </section>
 
     <!-- Step 3: Learning Roadmap -->
@@ -179,8 +365,10 @@
         </div>
     </section>
 
+
+
     <footer>
-        <p>&copy; 2024 JobAI Project. Crafted with <i class="fa-solid fa-heart"></i></p>
+        <p>&copy; CareerAlign. Intelligent Resume Alignment Engine.</p>
     </footer>
 
     <!-- Scripts -->

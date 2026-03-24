@@ -6,10 +6,15 @@ from backend.agents.job_analysis_agent import JobAnalysisAgent
 from backend.agents.job_ranking_agent import JobRankingAgent
 from backend.agents.skill_gap_agent import SkillGapAgent
 from backend.agents.learning_path_agent import LearningPathAgent
+from backend.agents.resume_optimization_agent import ResumeOptimizationAgent
+from backend.agents.ats_evaluation_agent import ATSEvaluationAgent
 from backend.tools.job_search_tool import search_jobs
 from backend.utils.data_manager import save_jobs
 from backend.utils.utils import get_llm
+from backend.utils.validator import validate_resume_optimization
 import re
+import os
+import datetime
 
 class JobSearchOrchestrator:
     def __init__(self):
@@ -19,6 +24,8 @@ class JobSearchOrchestrator:
         self.ranking_agent = JobRankingAgent().get_agent()
         self.skill_gap_agent = SkillGapAgent().get_agent()
         self.learning_path_agent = LearningPathAgent().get_agent()
+        self.resume_optimization_agent = ResumeOptimizationAgent().get_agent()
+        self.ats_evaluation_agent = ATSEvaluationAgent().get_agent()
 
     def run_search(self, role: str, location: str, num_results: int = 5):
         # Define Tasks
@@ -171,3 +178,123 @@ class JobSearchOrchestrator:
         result = crew.kickoff()
         # Return raw string content
         return result.raw if hasattr(result, 'raw') else str(result)
+    def optimize_resume(self, resume_json: dict, job_description: str, ats_score: dict, skill_gaps: dict, user_id: str = "default") -> dict:
+        def run_task(stricter=False):
+            instruction = ""
+            if stricter:
+                instruction = "\n\nSTRICT RE-TRIAL: You previously introduced fabricated entities or metrics. You MUST remove all new entities and metrics not present in original resume."
+
+            optimize_task = Task(
+                description=f"""Tailor the following structured resume to the target job description.
+                
+                RESUME JSON:
+                {json.dumps(resume_json, indent=2)}
+                
+                TARGET JOB:
+                {job_description}
+                
+                ATS SCORE BREAKDOWN:
+                {json.dumps(ats_score, indent=2)}
+                
+                SKILL GAP CLASSIFICATION:
+                {json.dumps(skill_gaps, indent=2)}
+                
+                FOLLOW THE STRICT STEP-BY-STEP LOGIC AND ANTI-FABRICATION RULES PROVIDED IN YOUR BACKSTORY.{instruction}
+                
+                The output MUST be a valid JSON object matching the requested structure. 
+                Do not include ANY text outside the JSON block.""",
+                expected_output="A structured JSON response for resume optimization.",
+                agent=self.resume_optimization_agent
+            )
+
+            crew = Crew(
+                agents=[self.resume_optimization_agent],
+                tasks=[optimize_task],
+                process=Process.sequential,
+                verbose=True
+            )
+            return crew.kickoff()
+
+        # Phase 1: Run Agent
+        result = run_task()
+        
+        # Robust JSON extraction
+        cleaned_result = str(result)
+        json_match = re.search(r'\{.*\}', cleaned_result, re.DOTALL)
+        if json_match:
+            cleaned_result = json_match.group(0)
+
+        # Phase 2: Validation
+        is_valid, validated_data = validate_resume_optimization(resume_json, cleaned_result)
+
+        # Phase 3: Retry if invalid
+        if not is_valid:
+            print(f"Validation failed: {validated_data}. Retrying...")
+            result = run_task(stricter=True)
+            cleaned_result = str(result)
+            json_match = re.search(r'\{.*\}', cleaned_result, re.DOTALL)
+            if json_match:
+                cleaned_result = json_match.group(0)
+            
+            is_valid, validated_data = validate_resume_optimization(resume_json, cleaned_result)
+            if not is_valid:
+                return {"error": f"Optimization failed due to persistent validation issues: {validated_data}"}
+
+        # Phase 4: Versioning
+        version_dir = f"backend/data/resumes/{user_id}/versions"
+        if not os.path.exists(version_dir):
+            os.makedirs(version_dir)
+        
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        version_file = f"{version_dir}/optimized_{timestamp}.json"
+        with open(version_file, "w") as f:
+            json.dump(validated_data, f, indent=2)
+
+        return validated_data
+    def evaluate_ats(self, resume_text: str, structured_resume: dict) -> dict:
+        evaluate_task = Task(
+            description=f"""Evaluate the following resume and generate a structured ATS compatibility score.
+            
+            STRUCTURED RESUME:
+            {json.dumps(structured_resume, indent=2)}
+            
+            RAW RESUME TEXT (for formatting/readability check):
+            {resume_text[:2000]}... (truncated if too long)
+            
+            STRICTLY FOLLOW THE SCORING FRAMEWORK AND NON-FABRICATION RULES PROVIDED IN YOUR BACKSTORY.
+            
+            The output MUST be a valid JSON object matching the requested structure.
+            Do not include ANY text outside the JSON block.""",
+            expected_output="A structured JSON response for ATS evaluation.",
+            agent=self.ats_evaluation_agent
+        )
+
+        crew = Crew(
+            agents=[self.ats_evaluation_agent],
+            tasks=[evaluate_task],
+            process=Process.sequential,
+            verbose=True
+        )
+        result = crew.kickoff()
+        
+        # Robust JSON extraction
+        cleaned_result = str(result)
+        json_match = re.search(r'\{.*\}', cleaned_result, re.DOTALL)
+        if json_match:
+            cleaned_result = json_match.group(0)
+        
+        try:
+            return json.loads(cleaned_result)
+        except json.JSONDecodeError:
+            # Fallback for parsing errors
+            return {"error": "Failed to parse ATS evaluation output as JSON", "raw": cleaned_result}
+
+_orchestrator_instance = None
+
+def get_orchestrator():
+    global _orchestrator_instance
+    if _orchestrator_instance is None:
+        print("🚀 Initializing JobSearchOrchestrator (Lazy Load)...")
+        _orchestrator_instance = JobSearchOrchestrator()
+        print("✅ JobSearchOrchestrator Initialized.")
+    return _orchestrator_instance

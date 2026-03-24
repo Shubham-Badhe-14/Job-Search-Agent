@@ -1,7 +1,11 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
 import shutil
 import os
+import asyncio
 from backend.tools.resume_parser import parse_resume
+from backend.services.orchestrator import get_orchestrator
+from pydantic import BaseModel
+from typing import Dict, Any
 
 router = APIRouter(prefix="/resume", tags=["resume"])
 
@@ -40,3 +44,50 @@ async def upload_resume(file: UploadFile = File(...)):
         return {"status": "success", "filename": file.filename, "parsed_content": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Parsing failed: {e}")
+@router.post("/optimize")
+async def optimize_resume(data: Dict[str, Any]):
+    """
+    Optimize and tailor a resume for a specific job description.
+    Expected Input:
+    {
+      "resume_json": {...},
+      "job_description": "...",
+      "ats_score": {...},
+      "skill_gaps": {...},
+      "user_id": "optional_id"
+    }
+    """
+    try:
+        orchestrator = get_orchestrator()
+        result = await asyncio.to_thread(
+            orchestrator.optimize_resume,
+            resume_json=data.get("resume_json"),
+            job_description=data.get("job_description"),
+            ats_score=data.get("ats_score"),
+            skill_gaps=data.get("skill_gaps"),
+            user_id=data.get("user_id", "default")
+        )
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Optimization failed: {e}")
+
+@router.post("/evaluate")
+async def evaluate_ats(data: Dict[str, Any]):
+    """
+    Evaluate a resume and generate a structured ATS score.
+    Expected Input:
+    {
+      "resume_text": "...",
+      "structured_resume": {...}
+    }
+    """
+    try:
+        orchestrator = get_orchestrator()
+        result = await asyncio.to_thread(
+            orchestrator.evaluate_ats,
+            resume_text=data.get("resume_text"),
+            structured_resume=data.get("structured_resume")
+        )
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"ATS Evaluation failed: {e}")

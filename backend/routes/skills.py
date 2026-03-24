@@ -1,11 +1,11 @@
 from fastapi import APIRouter, HTTPException, Body
+import asyncio
 from pydantic import BaseModel
 from typing import Any
-from backend.services.orchestrator import JobSearchOrchestrator
+from backend.services.orchestrator import get_orchestrator
 from backend.utils.data_manager import get_job_by_id
 
 router = APIRouter(prefix="/skills", tags=["skills"])
-orchestrator = JobSearchOrchestrator()
 
 class GapAnalysisRequest(BaseModel):
     resume_content: str
@@ -21,8 +21,9 @@ async def analyze_gap(request: GapAnalysisRequest):
         raise HTTPException(status_code=404, detail="Job not found")
         
     try:
+        orchestrator = get_orchestrator()
         # orchestrator now returns a string
-        result = orchestrator.analyze_skill_gap(request.resume_content, job)
+        result = await asyncio.to_thread(orchestrator.analyze_skill_gap, request.resume_content, job)
         return {"result": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -37,8 +38,9 @@ async def learning_path(gap_analysis: Any = Body(..., embed=True)):
     if not isinstance(gap_analysis, str):
         gap_analysis = str(gap_analysis)
     try:
+        orchestrator = get_orchestrator()
         # orchestrator now returns a string
-        result = orchestrator.generate_learning_path(gap_analysis)
+        result = await asyncio.to_thread(orchestrator.generate_learning_path, gap_analysis)
         return {"learning_path": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
