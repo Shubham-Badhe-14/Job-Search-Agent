@@ -63,14 +63,16 @@ CareerAlign relies on a highly consolidated **"One-Click Launcher"** system desi
 ### Prerequisites
 1.  **Clone the repository**:
     ```cmd
-    git clone https://github.com/Shubham-Badhe-14/Job-Search-Agent.git
-    cd Job-Search-Agent
+    git clone https://github.com/Shubham-Badhe-14/CareerAlign.git
+    cd CareerAlign
     ```
 
 2.  **Configure API Keys**:
     Create a `.env` file in the root directory:
     ```ini
     GEMINI_API_KEY=your_gemini_key_here
+    ADZUNA_APP_ID=your_adzuna_app_id
+    ADZUNA_API_KEY=your_adzuna_api_key
     ```
 
 ### 🚀 One-Click Startup (Windows MS-DOS)
@@ -95,7 +97,7 @@ Simply open your terminal in the root directory and execute:
 ## 📚 Project Structure
 
 ```ascii
-Job-Search-Agent/
+CareerAlign/
 ├── backend/            # FastAPI Backend & CrewAI Agents
 ├── frontend/           # Vanilla UI (HTML/CSS/JS)
 ├── docs/               # Screenshots and Docs
